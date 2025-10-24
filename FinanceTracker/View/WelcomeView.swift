@@ -4,59 +4,87 @@
 //
 //  Created by Ryan on 24/10/2025.
 //
-
 import SwiftUI
-internal import CoreData
+import CoreData
 
 struct WelcomeView: View {
     @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.income, ascending: true)],
+    
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Income.date, ascending: false)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var incomes: FetchedResults<Income>
     
     @State private var name: String = ""
     @State private var income: String = ""
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("insert Finance App name here")
-                .font(.title)
+            Text("Finance Tracker")
+                .font(.largeTitle)
                 .bold()
             
-            TextField("Enter name:", text: $name)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Text("Welcome! Let's get started")
+                .font(.headline)
+                .foregroundColor(.secondary)
             
-            TextField("Enter income:", text: $income)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Your Name")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                TextField("Enter your name", text: $name)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+            .padding(.top)
             
-            Button("Get started") {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Monthly Income")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
+                TextField("Enter your monthly income", text: $income)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+            }
+            
+            Button("Get Started") {
                 saveUserData()
             }
             .buttonStyle(.borderedProminent)
+            .disabled(name.isEmpty || income.isEmpty)
+            .padding(.top)
         }
         .padding()
     }
     
     func saveUserData() {
-        // convert income from text to double and store in Core Date entity
-        // save name and onboarding complete
+        guard let incomeAmount = Double(income), incomeAmount > 0 else {
+            return
+        }
+        
+        // Save user preferences
         UserDefaults.standard.set(name, forKey: "name")
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         
+        // Create Income entity using the model
+        let incomeModel = IncomeModel(
+            id: UUID(),
+            name: "Monthly Salary",
+            amount: incomeAmount,
+            date: Date(),
+            isRecurring: true
+        )
+        
         withAnimation {
-            let newIncome = Item(context: viewContext)
-            newIncome.income = Double(income) ?? 0
-
+            // Convert to CoreData entity and save
+            let newIncome = Income(from: incomeModel, context: viewContext)
+            
             do {
                 try viewContext.save()
-                print(newIncome)
+                print("Saved income: \(newIncome.name ?? "") - $\(newIncome.amount)")
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
                 let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print("Error saving income: \(nsError), \(nsError.userInfo)")
             }
         }
     }
@@ -64,4 +92,5 @@ struct WelcomeView: View {
 
 #Preview {
     WelcomeView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

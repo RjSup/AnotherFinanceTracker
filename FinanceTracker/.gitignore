@@ -7,6 +7,16 @@ build/
 *.xcodeproj/project.xcworkspace/
 *.xcuserstate
 
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+
+# CoreData auto-generated files (only if using auto-codegen)
+# Uncomment if you switch back to automatic generation:
+*+CoreDataClass.swift
+*+CoreDataProperties.swift
+
 #swift
 .build/
 Packages/
