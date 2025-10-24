@@ -5,7 +5,7 @@
 //  Created by Ryan on 24/10/2025.
 //
 
-import CoreData
+internal import CoreData
 
 struct PersistenceController {
     static let shared = PersistenceController()
@@ -16,7 +16,7 @@ struct PersistenceController {
         let viewContext = result.container.viewContext
         for _ in 0..<10 {
             let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            newItem.income = 0
         }
         do {
             try viewContext.save()
