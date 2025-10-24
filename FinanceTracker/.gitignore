@@ -1,0 +1,20 @@
+
+# Xcode
+DerivedDate/
+build/
+*.xcworkspace
+!default.xcworkspace
+*.xcodeproj/project.xcworkspace/
+*.xcuserstate
+
+#swift
+.build/
+Packages/
+.swiftpm/
+
+*.xcuserdata/
+.DS_Store
+*.log
+.xcarchive
+*~
+*.swp
