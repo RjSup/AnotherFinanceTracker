@@ -10,33 +10,25 @@ import CoreData
 struct WelcomeView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Income.date, ascending: false)],
-        animation: .default
-    )
-    private var incomes: FetchedResults<Income>
+    // persistently stored info
+    @AppStorage("name") private var name: String = ""
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     
-    @State private var name: String = ""
+    // viewmodel for coredata logic
+    @StateObject private var incomeViewModel: IncomeViewModel
+    
     @State private var income: String = ""
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     
+    init() {
+        let context = PersistenceController.shared.container.viewContext
+        _incomeViewModel = StateObject(wrappedValue: IncomeViewModel(context: context))
+    }
+
     var body: some View {
         ZStack {
-            MeshGradient(
-                width: 3,
-                height: 3,
-                points: [
-                    [0.0, 0.0], [0.5, 0.0], [1.0, 0.0],
-                    [0.5, 1.0], [0.7, 0.5], [1.0, 0.7],
-                    [0.0, 1.0], [0.0, 0.5], [0.0, 0.5]
-                ],
-                colors: [
-                    .teal, .purple, .indigo,
-                    .purple, .blue, .pink,
-                    .purple, .red, .purple
-                ]
-            )
-            .ignoresSafeArea()
-            .shadow(color: .gray, radius: 25, x: -10, y: 10)
+            Background()
             
             // Placeholder foreground content so the view compiles and renders
             VStack(spacing: 16) {
@@ -58,39 +50,31 @@ struct WelcomeView: View {
             }
             .padding()
         }
+        .alert("Error", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
     }
     
-    // Moved outside of `body` so the computed property can return a View
     func saveUserData() {
+        guard !name.isEmpty else {
+            alertMessage = "Please enter your name"
+            showAlert = true
+            return
+        }
+        
         guard let incomeAmount = Double(income), incomeAmount > 0 else {
+            alertMessage = "Please enter a valid monthly income"
+            showAlert = true
             return
         }
         
         // Save user preferences
-        UserDefaults.standard.set(name, forKey: "name")
-        UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
+        hasCompletedOnboarding = true
         
         // Create Income entity using the model
-        let incomeModel = IncomeModel(
-            id: UUID(),
-            name: "Monthly Salary",
-            amount: incomeAmount,
-            date: Date(),
-            isRecurring: true
-        )
-        
-        withAnimation {
-            // Convert to CoreData entity and save
-            let newIncome = Income(from: incomeModel, context: viewContext)
-            
-            do {
-                try viewContext.save()
-                print("Saved income: \(newIncome.name ?? "") - $\(newIncome.amount)")
-            } catch {
-                let nsError = error as NSError
-                print("Error saving income: \(nsError), \(nsError.userInfo)")
-            }
-        }
+        incomeViewModel.setIncome(name: "Monthly Salary", amount: incomeAmount, date: Date(), isRecurring: true)
     }
 }
 

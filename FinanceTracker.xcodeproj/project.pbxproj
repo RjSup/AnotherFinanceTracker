@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		94BC5A7D2EAFD6B000CEA50D /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 94BC5A7C2EAFD6B000CEA50D /* AsyncAlgorithms */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		94A9FD8A2EABE30600B79679 /* FinanceTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94BC5A7D2EAFD6B000CEA50D /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = FinanceTracker;
 			packageProductDependencies = (
+				94BC5A7C2EAFD6B000CEA50D /* AsyncAlgorithms */,
 			);
 			productName = FinanceTracker;
 			productReference = 94A9FD8A2EABE30600B79679 /* FinanceTracker.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 94A9FD812EABE30600B79679;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				94BC5A7B2EAFD6B000CEA50D /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 94A9FD8B2EABE30600B79679 /* Products */;
 			projectDirPath = "";
@@ -332,6 +341,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		94BC5A7B2EAFD6B000CEA50D /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		94BC5A7C2EAFD6B000CEA50D /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 94BC5A7B2EAFD6B000CEA50D /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 94A9FD822EABE30600B79679 /* Project object */;
 }
