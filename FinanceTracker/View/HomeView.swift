@@ -15,6 +15,7 @@ struct HomeView: View {
     @AppStorage("name") private var name: String = ""
    // context for the view models
     @StateObject private var incomeViewModel: IncomeViewModel
+    @StateObject private var expenseViewModel: ExpenseViewModel
     
     @State private var currentDate: Date = Date()
     
@@ -22,6 +23,7 @@ struct HomeView: View {
     init() {
         let context = PersistenceController.shared.container.viewContext
         _incomeViewModel = StateObject(wrappedValue: IncomeViewModel(context: context))
+        _expenseViewModel = StateObject(wrappedValue: ExpenseViewModel(context: context))
     }
     
     var body: some View {
@@ -76,6 +78,28 @@ struct HomeView: View {
                         Text("Recent expenses")
                             .foregroundColor(.white)
                             .font(.headline)
+                        
+                        // no expenses
+                        if expenseViewModel.expenses.isEmpty {
+                            Text("No Expenses yet")
+                                .foregroundColor(.secondary)
+                        } else {
+                            // show some expenses
+                            ForEach(expenseViewModel.expenses.prefix(5)) { expense in
+                                HStack {
+                                    Text(expense.title)
+                                        .foregroundColor(.white)
+                                    Spacer()
+                                    Text("-£\(expense.amount, specifier: "%.2f")")
+                                        .foregroundColor(.red)
+                                }
+                                .padding(.horizontal)
+                            }
+                        }
+                    }
+                    .padding()
+                    .onAppear {
+                        expenseViewModel.fetchExpenses()
                     }
                 }
                 
