@@ -27,98 +27,95 @@ struct HomeView: View {
     }
     
     var body: some View {
-        ZStack {
-            Background()
-            ScrollView {
-                // header
-                VStack {
-                    Text("Hi, \(name)")
-                        .font(.title)
-                    
-                    Text("Welcome back!")
-                        .font(.headline)
-                }
+        ScrollView {
+            // header
+            VStack {
+                Text("Hi, \(name)")
+                    .font(.title)
+                
+                Text("Welcome back!")
+                    .font(.headline)
+            }
 
-                // Income info
-                ZStack() {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                        .frame(width: 350, height: 200)
-                    
-                        VStack(spacing: 20) {
-                            Text(currentDate.formatted(.dateTime.month(.wide).year()))
-                                .font(.title)
-                            
-                            Text("Your income")
-                                .foregroundColor(.white)
-                                .font(.headline)
-                            
-                            if let income = incomeViewModel.income {
-                                Text("£\(income.amount, specifier: "%.2f")")
-                                    .font(.largeTitle)
-                                    .bold()
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("No income data")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        .onAppear {
-                            incomeViewModel.fetchIncome()
-                        }
-                }
-                    
-                //Expenses
-                ZStack() {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                        .frame(width: 350, height: 200)
-                    
+            // Income info
+            ZStack() {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.thinMaterial)
+                    .frame(width: 350, height: 200)
+                
                     VStack(spacing: 20) {
-                        Text("Recent expenses")
-                            .foregroundColor(.white)
+                        Text(currentDate.formatted(.dateTime.month(.wide).year()))
+                            .font(.title)
+                        
+                        Text("Your income")
+                            .foregroundColor(.secondary)
                             .font(.headline)
                         
-                        // no expenses
-                        if expenseViewModel.expenses.isEmpty {
-                            Text("No Expenses yet")
-                                .foregroundColor(.secondary)
+                        if let income = incomeViewModel.income {
+                            Text("£\(income.amount, specifier: "%.2f")")
+                                .font(.largeTitle)
+                                .bold()
+                                .foregroundColor(.green)
                         } else {
-                            // show some expenses
-                            ForEach(expenseViewModel.expenses.prefix(5)) { expense in
-                                HStack {
-                                    Text(expense.title)
-                                        .foregroundColor(.white)
-                                    Spacer()
-                                    Text("-£\(expense.amount, specifier: "%.2f")")
-                                        .foregroundColor(.red)
-                                }
-                                .padding(.horizontal)
-                            }
+                            Text("No income data")
+                                .foregroundColor(.secondary)
                         }
                     }
-                    .padding()
                     .onAppear {
-                        expenseViewModel.fetchExpenses()
+                        incomeViewModel.fetchIncome()
                     }
-                }
-                
-                // balance
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                        .frame(width: 350, height: 200)
-                    
-                    VStack(spacing: 20) {
-                        Text("Balance after expenses")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                    }
-                }
-                
             }
-            .padding()
+                
+            //Expenses
+            ZStack() {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.thinMaterial)
+                    .frame(width: 350, height: 200)
+                
+                VStack(spacing: 20) {
+                    Text("Recent expenses")
+                        .foregroundColor(.secondary)
+                        .font(.headline)
+     
+                    // no expenses
+                    if expenseViewModel.expenses.isEmpty {
+                        Text("No Expenses yet")
+                            .foregroundColor(.secondary)
+                    } else {
+                        // show some expenses
+                        ForEach(expenseViewModel.expenses.prefix(5)) { expense in
+                            HStack {
+                                Text(expense.title)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text("-£\(expense.amount, specifier: "%.2f")")
+                                    .foregroundColor(.red)
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
+                }
+                .padding()
+                .onAppear {
+                    expenseViewModel.fetchExpenses()
+                }
+            }
+            
+            // balance
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.thinMaterial)
+                    .frame(width: 350, height: 200)
+                
+                VStack(spacing: 20) {
+                    Text("Balance after expenses")
+                        .foregroundColor(.secondary)
+                        .font(.headline)
+                }
+            }
+            
         }
+        .padding()
     }
 }
 

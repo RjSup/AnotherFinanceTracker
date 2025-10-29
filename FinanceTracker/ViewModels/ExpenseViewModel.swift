@@ -95,25 +95,22 @@ class ExpenseViewModel: ObservableObject {
         }
     }
     
-    func getTotalExpenses(for month: Date? = nil, category: ExpenseCategory? = nil) -> Double {
-        // get all expenses to filter
+    func getFilteredExpenses(for month: Date? = nil, category: ExpenseCategory? = nil) -> [ExpenseModel] {
         var filtered = expenses
         
         // if filtering by month
         if let month = month {
-            // get current date
-            let calender = Calendar.current
-            // filter by calander days
-            filtered = filtered.filter { calender.isDate($0.date, equalTo: month, toGranularity: .month) }
+            let calendar = Calendar.current
+            filtered = filtered.filter { calendar.isDate($0.date, equalTo: month, toGranularity: .month) }
         }
-        
+            
         // if filtered by category
         if let category = category {
             // if category exists then filter by it
             filtered = filtered.filter { $0.category == category }
         }
         
-        return filtered.reduce(0) { $0 + $1.amount }
+        return filtered
     }
     
     private func saveContext() {

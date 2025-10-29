@@ -36,6 +36,7 @@ struct ExpensesView: View {
                         }
                         .padding()
                     } else {
+                        // expenses exist
                         List {
                             ForEach(expenseViewModel.expenses) { expense in
                                 HStack {
@@ -78,6 +79,9 @@ struct ExpensesView: View {
                 }
                 .sheet(isPresented: $sheetShowing) {
                     AddExpenseView(expenseViewModel: expenseViewModel)
+                        .presentationDragIndicator(.visible)
+                        .presentationDetents([.height(450)])
+                        // .presentationBackground(.blue.opacity(0.9))
                 }
             }
         }
